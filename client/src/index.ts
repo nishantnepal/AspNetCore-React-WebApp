@@ -8,7 +8,7 @@ const DO_NOT_LOGIN = true;
 runWithAdal(
     authContext,
     () => {
-        require('app/App.tsx');
+        require('./app/App.tsx');
     },
     DO_NOT_LOGIN
 );

@@ -4,6 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>8.0</LangVersion>
+    <Company>Microsoft</Company>
+    <Product />
+    <Authors>Devices Software Experiences</Authors>
   </PropertyGroup>
 
   <ItemGroup>

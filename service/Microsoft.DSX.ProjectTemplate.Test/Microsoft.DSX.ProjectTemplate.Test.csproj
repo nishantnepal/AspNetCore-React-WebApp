@@ -6,6 +6,10 @@
     <IsPackable>false</IsPackable>
 
     <LangVersion>8.0</LangVersion>
+
+    <Authors>Devices Software Experiences</Authors>
+
+    <Company>Microsoft</Company>
   </PropertyGroup>
 
   <ItemGroup>

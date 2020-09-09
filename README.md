@@ -39,7 +39,8 @@ npm start
 # Adding an Entity Framework Core migration
 
 1. Open a command prompt in the **Microsoft.DSX.ProjectTemplate.Data** folder.
-2. `dotnet ef migrations add <NAME OF MIGRATION>`
+2. `dotnet tool install --global dotnet-ef`
+3. `dotnet ef migrations add <NAME OF MIGRATION>`
 
 # Removing the latest Entity Framework Core migration
 
@@ -49,9 +50,10 @@ npm start
 # To-Do
 
 1. Migrate to MSAL.js
-2. Add Docker file
-3. Move away from localdb
-4. Create a CLI setup wizard
+2. Include Authentication and Authorization logic
+3. Add Docker file
+4. Move away from localdb
+5. Create a CLI setup wizard
 
 # Contributing
 

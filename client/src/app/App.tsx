@@ -6,8 +6,10 @@ import Groups from 'app/pages/groups/Groups';
 import Home from 'app/pages/home/Home';
 import msftLogo from 'app/static/msftLogo.png';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { BrowserRouter, Link, Route } from 'react-router-dom';
 
+import * as serviceWorker from '../serviceWorker';
 import styles from './App.module.scss';
 
 initializeIcons();
@@ -26,9 +28,10 @@ const App: React.FC = () => {
                         <div className={'ms-Grid-col ms-sm12 ms-lg4 ms-xl2'}>
                             <Nav
                                 linkAs={onRenderLink}
-                                expandButtonAriaLabel="Expand or collapse"
                                 groups={[
                                     {
+                                        collapseAriaLabel: 'Collapse',
+                                        expandAriaLabel: 'Expand',
                                         links: [
                                             {
                                                 name: 'Home',
@@ -37,12 +40,12 @@ const App: React.FC = () => {
                                             },
                                             {
                                                 name: 'About',
-                                                url: '/about/',
+                                                url: '/about',
                                                 key: 'about'
                                             },
                                             {
                                                 name: 'Groups',
-                                                url: '/groups/',
+                                                url: '/groups',
                                                 key: 'groups'
                                             }
                                         ]
@@ -52,8 +55,8 @@ const App: React.FC = () => {
                         </div>
                         <div className="ms-Grid-col ms-sm12 ms-lg8 msxl-10">
                             <Route path="/" exact component={Home} />
-                            <Route path="/about/" component={About} />
-                            <Route path="/groups/" component={Groups} />
+                            <Route path="/about" component={About} />
+                            <Route path="/groups" component={Groups} />
                         </div>
                     </div>
                 </div>
@@ -74,4 +77,9 @@ const onRenderLink = (props: IButtonProps) => {
     );
 };
 
-export default App;
+ReactDOM.render(<App />, document.getElementById('root'));
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();

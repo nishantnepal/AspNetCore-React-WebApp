@@ -7,6 +7,7 @@ const Groups: React.FC = () => {
         groups: [] as IGroupDto[],
         isFetching: false
     });
+
     const groupKeys: IGroupDto = {
         id: null,
         name: '',
@@ -14,6 +15,7 @@ const Groups: React.FC = () => {
         createdDate: null,
         updatedDate: null
     };
+
     const columns = Object.keys(groupKeys).map(
         (key): IColumn => {
             return {
@@ -28,6 +30,7 @@ const Groups: React.FC = () => {
             };
         }
     );
+
     useEffect(() => {
         const fetchData = async () => {
             try {
