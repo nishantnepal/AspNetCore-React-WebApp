@@ -52,16 +52,13 @@ stages:
          command: 'install'
          workingDir: 'client'
          verbose: false
-     - task: Npm@1
-       inputs:
-         command: 'custom'
-         workingDir: 'client'
-         customCommand: 'run build'     
+     
      - task: PowerShell@2
        displayName: Templatize Config File
        inputs:
          targetType: 'inline'
-         script: |           
+         script: |
+           Clear-Host
            $configFilePath="client/public/config.js"
            $configDataRaw = (Get-Content $configFilePath -raw)
            $firstCurlyBrace = $configDataRaw.IndexOf('{')
@@ -81,8 +78,13 @@ stages:
            
            $outputFile += "}"
            Write-Host $outputFile
-           Write-Host $configFilePath
-           Set-Content -Path $configFilePath -value $outputFile -Force
+           Set-Content -Path client/public/config.js -value $outputFile
+
+     - task: Npm@1
+       inputs:
+         command: 'custom'
+         workingDir: 'client'
+         customCommand: 'run build'            
      - task: PublishBuildArtifacts@1
        displayName: Publish Artifacts
        inputs:
@@ -92,7 +94,7 @@ stages:
 
 - stage: ui_deploy_dev
   displayName: Dev UI Deploy
-  dependsOn: ui_build
+  dependsOn: ui_build   
   variables:
    - group: ReactCICD-Dev 
   jobs:
