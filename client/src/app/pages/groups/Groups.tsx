@@ -35,7 +35,9 @@ const Groups: React.FC = () => {
         const fetchData = async () => {
             try {
                 setData({ groups: data.groups, isFetching: true });
-                const result = await new ApiClient(process.env.REACT_APP_API_BASE).groups_GetAllGroups();
+                //const result = await new ApiClient(process.env.REACT_APP_API_BASE).groups_GetAllGroups();
+                console.log('calling api at ' + window.Configs.API_BASE)                
+                const result = await new ApiClient(window.Configs.API_BASE).groups_GetAllGroups();
                 setData({ groups: result, isFetching: false });
             } catch (e) {
                 console.log(e);
