@@ -100,6 +100,7 @@ stages:
               archiveType: 'zip'
               archiveFile: '$(Pipeline.Workspace)/ui-$(Build.BuildId).zip'
               replaceExistingArchive: true
+              verbose: true
 
           - task: AzureRmWebAppDeployment@4
             inputs:
