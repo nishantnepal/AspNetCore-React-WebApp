@@ -78,3 +78,44 @@ stages:
         PathtoPublish: 'client/build'
         ArtifactName: 'ui'
         publishLocation: 'Container'         
+
+- stage: ui_deploy_dev
+  displayName: Dev UI Deploy
+  dependsOn: ui_build   
+  jobs:
+  - deployment:  Deploy
+    displayName: Deploy    
+    pool:
+      vmImage: $(vmImageName)
+    environment: 'ui-dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: replacetokens@3
+            inputs:
+              targetFiles: '**/ui/config.js'
+              encoding: 'auto'
+              writeBOM: true
+              actionOnMissing: 'fail'
+              keepToken: false
+              tokenPrefix: '#{'
+              tokenSuffix: '}#'
+              useLegacyPattern: false
+              enableTelemetry: true
+
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: 'ui/**'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Pipeline.Workspace)/$(Build.BuildId).zip'
+              replaceExistingArchive: true
+
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'Visual Studio Ultimate with MSDN(be3aa8d6-3fd0-46a1-96fd-e7f6f61dd24e)'
+              appType: 'webAppLinux'
+              WebAppName: 'nnepal-appconfig-dev'
+              packageForLinux: '$(Pipeline.Workspace)/$(Build.BuildId).zip'           
