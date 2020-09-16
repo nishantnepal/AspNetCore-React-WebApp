@@ -157,5 +157,4 @@ stages:
               azureSubscription: 'VS Ultimate'
               appType: 'webAppLinux'
               WebAppName: 'nnepal-react-wc-api-dev'
-              packageForLinux: '$(Pipeline.Workspace)/api/**.zip'
-              StartupCommand: 'pm2 serve /home/site/wwwroot/ui --no-daemon --spa'                           
+              packageForLinux: '$(Pipeline.Workspace)/api/**.zip'                                      
