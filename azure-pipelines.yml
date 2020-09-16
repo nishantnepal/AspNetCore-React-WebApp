@@ -46,14 +46,7 @@ stages:
   jobs:  
   - job: ui_ci
     displayName: UI Build    
-    steps:
-     - task: Bash@3
-       inputs:
-         targetType: 'inline'
-         script: |
-           # Write your commands here
-           
-           ls
+    steps:    
      - task: Npm@1
        inputs:
          command: 'install'
@@ -63,15 +56,8 @@ stages:
        inputs:
          command: 'custom'
          workingDir: 'client'
-         customCommand: 'run build'
+         customCommand: 'run build'     
      
-     - task: Bash@3
-       inputs:
-        targetType: 'inline'
-        script: |
-          # Write your commands here
-          
-          ls
      - task: PublishBuildArtifacts@1
        displayName: Publish Artifacts
        inputs:
@@ -101,10 +87,16 @@ stages:
               tokenSuffix: '}#'
               useLegacyPattern: false
               enableTelemetry: true
-
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                # Write your commands here
+                
+                ls
           - task: ArchiveFiles@2
             inputs:
-              rootFolderOrFile: 'ui/**'
+              rootFolderOrFile: '**/ui'
               includeRootFolder: true
               archiveType: 'zip'
               archiveFile: '$(Pipeline.Workspace)/$(Build.BuildId).zip'
