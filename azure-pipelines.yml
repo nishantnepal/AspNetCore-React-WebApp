@@ -63,7 +63,7 @@ stages:
          targetType: 'inline'
          script: |
            Clear-Host
-           $configFilePath="C:\temp\config.js"
+           $configFilePath="client/public/config.js"
            $configDataRaw = (Get-Content $configFilePath -raw)
            $firstCurlyBrace = $configDataRaw.IndexOf('{')
            $length = $configDataRaw.Length
@@ -82,6 +82,7 @@ stages:
            
            $outputFile += "}"
            Write-Host $outputFile
+           Set-Content -Path $(Build.SourcesDirectory)/.env -value $outputFile
      - task: PublishBuildArtifacts@1
        displayName: Publish Artifacts
        inputs:
