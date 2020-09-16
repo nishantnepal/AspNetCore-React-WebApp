@@ -15,7 +15,7 @@ variables:
 
 stages:
 - stage: api_build
-  displayName: Api
+  displayName: Api Build
   jobs:  
   - job: CI
     displayName: Api Build    
@@ -42,10 +42,18 @@ stages:
 
 - stage: ui_build
   displayName: UI Build
+  dependsOn: [] 
   jobs:  
   - job: ui_ci
     displayName: UI Build    
     steps:
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: |
+           # Write your commands here
+           
+           ls
      - task: Npm@1
        inputs:
          command: 'install'
