@@ -109,3 +109,4 @@ stages:
               appType: 'webAppLinux'
               WebAppName: 'nnepal-react-wc-dev'
               packageForLinux: '$(Pipeline.Workspace)/ui-$(Build.BuildId).zip'
+              StartupCommand: 'pm2 serve /home/site/wwwroot/ui --no-daemon --spa'
