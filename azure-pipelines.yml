@@ -139,3 +139,23 @@ stages:
               WebAppName: 'nnepal-react-wc-dev'
               packageForLinux: '$(Pipeline.Workspace)/ui-$(Build.BuildId).zip'
               StartupCommand: 'pm2 serve /home/site/wwwroot/ui --no-daemon --spa'
+
+- stage: api_deploy_dev
+  displayName: Dev API Deploy
+  dependsOn: api_build     
+  jobs:
+  - deployment:  Deploy
+    displayName: Deploy        
+    environment: 'api-dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps: 
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'VS Ultimate'
+              appType: 'webAppLinux'
+              WebAppName: 'nnepal-react-wc-api-dev'
+              packageForLinux: '$(Pipeline.Workspace)/api/**.zip'
+              StartupCommand: 'pm2 serve /home/site/wwwroot/ui --no-daemon --spa'                           
