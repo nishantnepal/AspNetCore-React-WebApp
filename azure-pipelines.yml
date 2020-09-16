@@ -75,6 +75,6 @@ stages:
      - task: PublishBuildArtifacts@1
        displayName: Publish Artifacts
        inputs:
-        PathtoPublish: 'build'
+        PathtoPublish: 'client/build'
         ArtifactName: 'ui'
         publishLocation: 'Container'         
