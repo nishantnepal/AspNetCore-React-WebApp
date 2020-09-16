@@ -92,7 +92,9 @@ stages:
 
 - stage: ui_deploy_dev
   displayName: Dev UI Deploy
-  dependsOn: ui_build   
+  dependsOn: ui_build
+  variables:
+   - group: ReactCICD-Dev 
   jobs:
   - deployment:  Deploy
     displayName: Deploy        
