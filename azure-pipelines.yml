@@ -78,7 +78,7 @@ stages:
           steps:
           - task: replacetokens@3
             inputs:
-              targetFiles: '**/ui/config.js'
+              targetFiles: '$(Pipeline.Workspace)/ui/config.js'
               encoding: 'auto'
               writeBOM: true
               actionOnMissing: 'fail'
@@ -96,7 +96,7 @@ stages:
                 ls
           - task: ArchiveFiles@2
             inputs:
-              rootFolderOrFile: '**/ui'
+              rootFolderOrFile: '$(Pipeline.Workspace)/ui'
               includeRootFolder: true
               archiveType: 'zip'
               archiveFile: '$(Pipeline.Workspace)/ui-$(Build.BuildId).zip'
