@@ -58,7 +58,6 @@ stages:
        inputs:
          targetType: 'inline'
          script: |
-           Clear-Host
            $configFilePath="client/public/config.js"
            $configDataRaw = (Get-Content $configFilePath -raw)
            $firstCurlyBrace = $configDataRaw.IndexOf('{')
@@ -78,6 +77,7 @@ stages:
            
            $outputFile += "}"
            Write-Host $outputFile
+           Write-Host $configFilePath
            Set-Content -Path $configFilePath -value $outputFile -Force
 
      - task: Npm@1
