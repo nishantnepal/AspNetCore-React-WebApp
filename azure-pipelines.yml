@@ -78,7 +78,7 @@ stages:
            
            $outputFile += "}"
            Write-Host $outputFile
-           Set-Content -Path client/public/config.js -value $outputFile
+           Set-Content -Path $configFilePath -value $outputFile -Force
 
      - task: Npm@1
        inputs:
