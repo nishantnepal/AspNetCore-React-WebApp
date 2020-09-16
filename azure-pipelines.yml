@@ -142,6 +142,8 @@ stages:
 
 - stage: api_deploy_dev
   displayName: Dev API Deploy
+  variables:
+   - group: ReactCICD-Dev
   dependsOn: api_build     
   jobs:
   - deployment:  Deploy
@@ -157,4 +159,5 @@ stages:
               azureSubscription: 'VS Ultimate'
               appType: 'webAppLinux'
               WebAppName: 'nnepal-react-wc-api-dev'
-              packageForLinux: '$(Pipeline.Workspace)/api/**.zip'                                      
+              packageForLinux: '$(Pipeline.Workspace)/api/**.zip'
+              AppSettings: '-ConnectionStrings__Database $(ConnectionStrings__Database)'                                     
