@@ -160,4 +160,4 @@ stages:
               appType: 'webAppLinux'
               WebAppName: 'nnepal-react-wc-api-dev'
               packageForLinux: '$(Pipeline.Workspace)/api/**.zip'
-              AppSettings: '-ConnectionStrings__Database $(ConnectionStrings__Database)'                                     
+              AppSettings: '-ConnectionStrings_Database "$(ConnectionStrings__Database)"'
