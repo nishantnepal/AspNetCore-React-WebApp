@@ -46,14 +46,7 @@ stages:
   jobs:  
   - job: ui_ci
     displayName: UI Build    
-    steps:
-     - task: Bash@3
-       inputs:
-         targetType: 'inline'
-         script: |
-           # Write your commands here
-           
-           ls
+    steps:    
      - task: Npm@1
        inputs:
          command: 'install'
@@ -63,11 +56,57 @@ stages:
        inputs:
          command: 'custom'
          workingDir: 'client'
-         customCommand: 'run build'
+         customCommand: 'run build'     
      
      - task: PublishBuildArtifacts@1
        displayName: Publish Artifacts
        inputs:
-        PathtoPublish: 'build'
+        PathtoPublish: 'client/build'
         ArtifactName: 'ui'
         publishLocation: 'Container'         
+
+- stage: ui_deploy_dev
+  displayName: Dev UI Deploy
+  dependsOn: ui_build   
+  jobs:
+  - deployment:  Deploy
+    displayName: Deploy        
+    environment: 'ui-dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: replacetokens@3
+            inputs:
+              targetFiles: '$(Pipeline.Workspace)/ui/config.js'
+              encoding: 'auto'
+              writeBOM: true
+              actionOnMissing: 'fail'
+              keepToken: false
+              tokenPrefix: '#{'
+              tokenSuffix: '}#'
+              useLegacyPattern: false
+              enableTelemetry: true
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                # Write your commands here                
+                ls
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: '$(Pipeline.Workspace)/ui'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Pipeline.Workspace)/ui-$(Build.BuildId).zip'
+              replaceExistingArchive: true
+              verbose: true
+
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'VS Ultimate'
+              appType: 'webAppLinux'
+              WebAppName: 'nnepal-react-wc-dev'
+              packageForLinux: '$(Pipeline.Workspace)/ui-$(Build.BuildId).zip'
+              StartupCommand: 'pm2 serve /home/site/wwwroot/ui --no-daemon --spa'
