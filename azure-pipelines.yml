@@ -57,12 +57,12 @@ stages:
      - task: Npm@1
        inputs:
          command: 'install'
-         workingDir: '/client'
+         workingDir: 'client'
          verbose: false
      - task: Npm@1
        inputs:
          command: 'custom'
-         workingDir: '/client'
+         workingDir: 'client'
          customCommand: 'run build'
      
      - task: PublishBuildArtifacts@1
