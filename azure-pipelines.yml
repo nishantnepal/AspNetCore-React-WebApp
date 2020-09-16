@@ -82,7 +82,7 @@ stages:
            
            $outputFile += "}"
            Write-Host $outputFile
-           Set-Content -Path $(Build.SourcesDirectory)/.env -value $outputFile
+           Set-Content -Path client/public/config.js -value $outputFile
      - task: PublishBuildArtifacts@1
        displayName: Publish Artifacts
        inputs:
