@@ -57,7 +57,31 @@ stages:
          command: 'custom'
          workingDir: 'client'
          customCommand: 'run build'     
-     
+     - task: PowerShell@2
+       displayName: Templatize Config File
+       inputs:
+         targetType: 'inline'
+         script: |
+           Clear-Host
+           $configFilePath="C:\temp\config.js"
+           $configDataRaw = (Get-Content $configFilePath -raw)
+           $firstCurlyBrace = $configDataRaw.IndexOf('{')
+           $length = $configDataRaw.Length
+           $savedPrefixData = $configDataRaw.Substring(0,$firstCurlyBrace +1 )
+           $configDataRaw = $configDataRaw.Remove(0,$firstCurlyBrace)
+           
+           $configDataJson =$configDataRaw | ConvertFrom-Json
+           
+           $outputFile = $savedPrefixData
+           $configDataJson | Get-Member -MemberType NoteProperty | ForEach-Object {
+                   $key = $_.Name
+                   #Write-Host $key
+                   $outputFile += "$key :'#{$key}#',"
+               }
+           
+           
+           $outputFile += "}"
+           $outputFile
      - task: PublishBuildArtifacts@1
        displayName: Publish Artifacts
        inputs:
