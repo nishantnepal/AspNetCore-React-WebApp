@@ -84,9 +84,7 @@ stages:
   dependsOn: ui_build   
   jobs:
   - deployment:  Deploy
-    displayName: Deploy    
-    pool:
-      vmImage: $(vmImageName)
+    displayName: Deploy        
     environment: 'ui-dev'
     strategy:
       runOnce:
