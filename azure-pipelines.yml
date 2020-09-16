@@ -81,7 +81,7 @@ stages:
            
            
            $outputFile += "}"
-           $outputFile
+           Write-Host $outputFile
      - task: PublishBuildArtifacts@1
        displayName: Publish Artifacts
        inputs:
