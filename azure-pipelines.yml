@@ -99,7 +99,7 @@ stages:
               rootFolderOrFile: '**/ui'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Pipeline.Workspace)/$(Build.BuildId).zip'
+              archiveFile: '$(Pipeline.Workspace)/ui-$(Build.BuildId).zip'
               replaceExistingArchive: true
 
           - task: AzureRmWebAppDeployment@4
@@ -108,4 +108,4 @@ stages:
               azureSubscription: 'VS Ultimate'
               appType: 'webAppLinux'
               WebAppName: 'nnepal-react-wc-dev'
-              packageForLinux: '$(Pipeline.Workspace)/$(Build.BuildId).zip'
+              packageForLinux: '$(Pipeline.Workspace)/ui-$(Build.BuildId).zip'
