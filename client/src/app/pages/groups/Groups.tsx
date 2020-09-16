@@ -1,5 +1,6 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, Spinner, SpinnerSize } from '@fluentui/react';
 import { ApiClient, IGroupDto } from 'app/generated/backend';
+import { AppConfigs } from 'app/utils/config';
 import React, { useEffect, useState } from 'react';
 
 const Groups: React.FC = () => {
@@ -36,10 +37,9 @@ const Groups: React.FC = () => {
             try {
                 setData({ groups: data.groups, isFetching: true });
                 //const result = await new ApiClient(process.env.REACT_APP_API_BASE).groups_GetAllGroups();
-                // @ts-ignore
-                console.log('calling api at ' + window.Configs.API_BASE)    
+                console.log('calling api at ' + AppConfigs.Configs.API_BASE)    
                 // @ts-ignore            
-                const result = await new ApiClient(window.Configs.API_BASE).groups_GetAllGroups();
+                const result = await new ApiClient(AppConfigs.Configs.API_BASE).groups_GetAllGroups();
                 setData({ groups: result, isFetching: false });
             } catch (e) {
                 console.log(e);
