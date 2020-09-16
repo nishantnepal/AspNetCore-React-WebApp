@@ -18,9 +18,7 @@ stages:
   displayName: Api
   jobs:  
   - job: CI
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
+    displayName: Build    
     steps:
     - task: DotNetCoreCLI@2
       displayName: Build
