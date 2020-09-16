@@ -14,11 +14,11 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
-- stage: api
+- stage: api_build
   displayName: Api
   jobs:  
   - job: CI
-    displayName: Build    
+    displayName: Api Build    
     steps:
     - task: DotNetCoreCLI@2
       displayName: Build
@@ -39,3 +39,27 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'api'
         publishLocation: 'Container'
+
+- stage: ui_build
+  displayName: UI Build
+  jobs:  
+  - job: ui_ci
+    displayName: UI Build    
+    steps:
+     - task: Npm@1
+       inputs:
+         command: 'install'
+         workingDir: '/client'
+         verbose: false
+     - task: Npm@1
+       inputs:
+         command: 'custom'
+         workingDir: '/client'
+         customCommand: 'run build'
+     
+     - task: PublishBuildArtifacts@1
+       displayName: Publish Artifacts
+       inputs:
+        PathtoPublish: 'build'
+        ArtifactName: 'ui'
+        publishLocation: 'Container'         
