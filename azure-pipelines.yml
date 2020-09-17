@@ -122,8 +122,8 @@ stages:
             inputs:
               targetFiles: |
                 $(Pipeline.Workspace)/ui/config.js
-                $(Pipeline.Workspace)/ui/**.js
-                $(Pipeline.Workspace)/ui/**.html
+                $(Pipeline.Workspace)/ui/**/*.js
+                $(Pipeline.Workspace)/ui/**/*.html
               encoding: 'auto'
               writeBOM: true
               actionOnMissing: 'fail'
