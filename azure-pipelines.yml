@@ -79,7 +79,20 @@ stages:
            Write-Host $outputFile
            Write-Host $configFilePath
            Set-Content -Path $configFilePath -value $outputFile -Force
-
+     - task: PowerShell@2
+       displayName: Templatize Env File
+       inputs:
+         targetType: 'inline'
+         script: |
+            $envFilePath="client/.env"
+            $envFile = (Get-Content $envFilePath -raw)
+            $outputFile = ''            
+            $envFile.Split("`n") | ForEach {
+                $key = $_.Split("=")[0]
+                $outputFile += "$key=#{$key}#" + "`n"
+            }
+             Write-Host $outputFile
+             Set-Content -Path $envFilePath -value $outputFile -Force
      - task: Npm@1
        inputs:
          command: 'custom'
@@ -107,7 +120,10 @@ stages:
           steps:
           - task: replacetokens@3
             inputs:
-              targetFiles: '$(Pipeline.Workspace)/ui/config.js'
+              targetFiles: |
+                $(Pipeline.Workspace)/ui/config.js
+                $(Pipeline.Workspace)/ui/*.js
+                $(Pipeline.Workspace)/ui/*.html
               encoding: 'auto'
               writeBOM: true
               actionOnMissing: 'fail'
