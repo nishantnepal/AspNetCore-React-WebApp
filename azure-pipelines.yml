@@ -161,3 +161,19 @@ stages:
               WebAppName: 'nnepal-react-wc-api-dev'
               packageForLinux: '$(Pipeline.Workspace)/api/**.zip'
               AppSettings: '-ConnectionStrings_Database "$(ConnectionStrings__Database)"'
+
+          - task: AzureAppServiceSettings@1
+            inputs:
+              azureSubscription: 'VS Ultimate'
+              appName: 'nnepal-react-wc-api-dev'
+              resourceGroupName: 'demo-appconfig-01'
+              connectionStrings: |
+                [
+                   {
+                    "name": "Database",
+                    "value": "$(ConnectionStrings_Database)",
+                    "type": "SQLAzure",
+                    "slotSetting": false
+                   }
+                  
+                ]
