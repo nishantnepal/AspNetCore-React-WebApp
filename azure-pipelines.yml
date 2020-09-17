@@ -159,8 +159,7 @@ stages:
               azureSubscription: 'VS Ultimate'
               appType: 'webAppLinux'
               WebAppName: 'nnepal-react-wc-api-dev'
-              packageForLinux: '$(Pipeline.Workspace)/api/**.zip'
-              AppSettings: '-ConnectionStrings_Database "$(ConnectionStrings__Database)"'
+              packageForLinux: '$(Pipeline.Workspace)/api/**.zip'              
 
           - task: AzureAppServiceSettings@1
             inputs:
