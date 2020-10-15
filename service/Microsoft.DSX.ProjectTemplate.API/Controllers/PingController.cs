@@ -71,6 +71,8 @@ namespace Microsoft.DSX.ProjectTemplate.API.Controllers
             }
 
             variables = variables.OrderBy(v => v.Key).ToList();
+            variables.Add(new KeyValuePair<string, string>("AppSettings - WeatherServiceBaseUrl", _configuration["WeatherServiceBaseUrl"]));
+            variables.Add(new KeyValuePair<string, string>("AppSettings - LogLevel_Default", _configuration["Logging:LogLevel:Default"]));
             return Ok(variables);
         }
     }
