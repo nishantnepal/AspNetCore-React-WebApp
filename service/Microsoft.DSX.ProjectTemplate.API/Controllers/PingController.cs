@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -64,10 +65,16 @@ namespace Microsoft.DSX.ProjectTemplate.API.Controllers
         [Route("envvars")]
         public async Task<IActionResult> GetEnvironmentVariables()
         {
+            Regex regex = new Regex("(?<=Password=)(.*)(?=;)");
             var variables = new List<KeyValuePair<string, string>>();
             foreach (DictionaryEntry de in Environment.GetEnvironmentVariables())
             {
-                variables.Add(new KeyValuePair<string, string>(de.Key.ToString(), de.Value.ToString()));
+                string value = de.Value.ToString();
+                if (de.Key.ToString().Contains("connectionstring", StringComparison.OrdinalIgnoreCase))
+                {
+                    value = regex.Replace(value, "XXXXXXXXX");
+                }
+                variables.Add(new KeyValuePair<string, string>(de.Key.ToString(), value));
             }
 
             variables = variables.OrderBy(v => v.Key).ToList();
