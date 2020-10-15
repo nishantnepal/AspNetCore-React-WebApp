@@ -37,6 +37,30 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "bridge-to-kubernetes.service",
+            "type": "bridge-to-kubernetes.service",
+            "service": "reactapp-be",
+            "ports": [
+                8080
+            ]
+        },
+        {
+            "label": "bridge-to-kubernetes.compound",
+            "dependsOn": [
+                "bridge-to-kubernetes.service",
+                "build"
+            ],
+            "dependsOrder": "sequence"
+        },
+        {
+            "label": "bridge-to-kubernetes.service",
+            "type": "bridge-to-kubernetes.service",
+            "service": "bikes",
+            "ports": [
+                3000
+            ]
         }
     ]
 }

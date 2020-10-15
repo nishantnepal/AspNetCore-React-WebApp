@@ -36,6 +36,7 @@ namespace Microsoft.DSX.ProjectTemplate.API
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddHttpClient()
                 .AddDbConnections(_configuration, _environment)
                 .AddAutoMapperProfiles()
                 .AddServices()
@@ -58,8 +59,10 @@ namespace Microsoft.DSX.ProjectTemplate.API
             else
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+               // app.UseHsts();
             }
+
+            app.UsePathBase($"/be");
 
             app
                 .UseExceptionHandling()

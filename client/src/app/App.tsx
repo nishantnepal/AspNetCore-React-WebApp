@@ -3,6 +3,8 @@ import 'office-ui-fabric-react/dist/css/fabric.css';
 import { IButtonProps, Icon, Image, initializeIcons, Nav, Text } from '@fluentui/react';
 import About from 'app/pages/about/About';
 import Groups from 'app/pages/groups/Groups';
+import Weather from 'app/pages/weather/Weather';
+import EnvVars from 'app/pages/envvars/EnvVars';
 import Home from 'app/pages/home/Home';
 import msftLogo from 'app/static/msftLogo.png';
 import React from 'react';
@@ -47,6 +49,16 @@ const App: React.FC = () => {
                                                 name: 'Groups',
                                                 url: '/groups',
                                                 key: 'groups'
+                                            },
+                                            {
+                                                name: 'Weather - External Svc',
+                                                url: '/weather',
+                                                key: 'weather'
+                                            },
+                                            {
+                                                name: 'API Env Vars',
+                                                url: '/envvars',
+                                                key: 'envvars'
                                             }
                                         ]
                                     }
@@ -57,6 +69,8 @@ const App: React.FC = () => {
                             <Route path="/" exact component={Home} />
                             <Route path="/about" component={About} />
                             <Route path="/groups" component={Groups} />
+                            <Route path="/weather" component={Weather} />
+                            <Route path="/envvars" component={EnvVars} />
                         </div>
                     </div>
                 </div>

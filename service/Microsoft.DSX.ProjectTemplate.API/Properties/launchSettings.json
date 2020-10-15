@@ -31,6 +31,12 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "publishAllPorts": true,
       "useSSL": true
+    },
+    "Bridge to Kubernetes": {
+      "commandName": "AzureDevSpacesLocal",
+      "resourceGroup": "rg-aks-32591",
+      "aksName": "aks-32591",
+      "subscriptionId": "8f971f30-88ac-44b3-b1ee-12c7975f5ca3"
     }
   }
 }

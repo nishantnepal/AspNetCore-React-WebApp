@@ -1,0 +1,199 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactapp-be
+spec:
+  selector:
+    matchLabels:
+      app: reactapp-be
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactapp-be
+    spec:
+      containers:
+      - name: reactapp-be
+        image: nishantnepal/reactapp-be
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "250Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 80 
+        livenessProbe:
+            httpGet: 
+              path: /api/Ping
+              port: 80
+            initialDelaySeconds: 2
+            timeoutSeconds: 5
+            periodSeconds : 5 #how often to poll
+            successThreshold: 1
+            failureThreshold: 3        
+        readinessProbe:
+            httpGet: 
+              path: /api/Ping/ready
+              port: 80
+            initialDelaySeconds: 2
+            timeoutSeconds: 60
+            periodSeconds : 5 #how often to poll
+        env:
+            - name: ConnectionStrings__Database
+              value: "<db-connection-string>"                     
+            
+            - name: WeatherServiceBaseUrl
+              value: "http://reactapp-be2"                     
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: reactapp-be
+spec:
+    type: ClusterIP
+    ports:
+    - port: 80 
+      targetPort: 80
+    selector:
+        app: reactapp-be      
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactapp-fe
+spec:
+  selector:
+    matchLabels:
+      app: reactapp-fe
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactapp-fe
+    spec:
+      containers:
+      - name: reactapp-fe
+        image: nishantnepal/reactapp-fe
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 80   
+        env:
+            - name: API_BASE
+              value: "http://reactapp-nginx-api.<public-ip>.nip.io"                                        
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: reactapp-fe
+spec:
+    type: ClusterIP
+    ports:
+    - port: 80 
+      targetPort: 80
+    selector:
+        app: reactapp-fe     
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactapp-be2
+spec:
+  selector:
+    matchLabels:
+      app: reactapp-be2
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactapp-be2
+    spec:
+      containers:
+      - name: reactapp-fe
+        image: nishantnepal/reactapp-be2
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 80                                               
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: reactapp-be2
+spec:
+    type: ClusterIP
+    ports:
+    - port: 80 
+      targetPort: 80
+    selector:
+        app: reactapp-be2     
+
+
+---            
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: reactapp-fe-ingress-nginx
+  #namespace: ingress-basic
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+    - host: "reactapp-nginx.52.143.76.198.nip.io"
+      http:
+       paths:              
+        - backend:
+            serviceName: reactapp-fe
+            servicePort: 80
+          path: /(.*)
+
+---            
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: reactapp-be-ingress-nginx
+  #namespace: ingress-basic
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+    - host: "reactapp-nginx-api.<public-ip>.nip.io"
+      http:
+       paths:
+        - path: /(.*)
+          backend:
+            serviceName: reactapp-be
+            servicePort: 80                        
+
+#kubectl delete deployment.apps/reactapp-be -n ingress-basic | kubectl delete service/reactapp-be -n ingress-basic | kubectl delete deployment.apps/reactapp-fe -n ingress-basic | kubectl delete service/reactapp-fe -n ingress-basic
+#kubectl delete deployment.apps/reactapp-be2 -n ingress-basic | kubectl delete service/reactapp-be2 -n ingress-basic | kubectl delete ingress.networking.k8s.io/reactapp-be-ingress-nginx -n ingress-basic   | kubectl delete ingress.networking.k8s.io/reactapp-fe-ingress-nginx -n ingress-basic
+
+#https://github.com/MicrosoftDocs/azure-docs/issues/62037 -- Pod "nginx-ingress-ingress-nginx-admission-create-xxxx" is in continuous ContainerCreating status
+#kubectl delete -A ValidatingWebhookConfiguration nginx-ingress-ingress-nginx-admission
+#kubectl delete pod nginx-ingress-ingress-nginx-admission-create-xxxxx

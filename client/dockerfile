@@ -13,5 +13,7 @@ RUN npm run build
 # production environment
 FROM nginx:stable-alpine
 COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/build/config.js /usr/share/nginx/html/config_template.js
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/bin/sh",  "-c",  "envsubst < /usr/share/nginx/html/config_template.js > /usr/share/nginx/html/config.js && exec nginx -g 'daemon off;'"]
+#CMD ["nginx", "-g", "daemon off;"]

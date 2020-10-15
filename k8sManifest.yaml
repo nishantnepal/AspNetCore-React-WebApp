@@ -1,0 +1,172 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactapp-be
+spec:
+  selector:
+    matchLabels:
+      app: reactapp-be
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactapp-be
+    spec:
+      containers:
+      - name: reactapp-be
+        image: nishantnepal/reactapp-be
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "250Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 80 
+        livenessProbe:
+            httpGet: 
+              path: /api/Ping
+              port: 80
+            initialDelaySeconds: 2
+            timeoutSeconds: 5
+            periodSeconds : 5 #how often to poll
+            successThreshold: 1
+            failureThreshold: 3        
+        readinessProbe:
+            httpGet: 
+              path: /api/Ping/ready
+              port: 80
+            initialDelaySeconds: 2
+            timeoutSeconds: 60
+            periodSeconds : 5 #how often to poll
+        env:
+            - name: ConnectionStrings__Database
+              value: "<db-connection-string>"                     
+            
+            - name: WeatherServiceBaseUrl
+              value: "http://reactapp-be2"                     
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: reactapp-be
+spec:
+    type: ClusterIP
+    ports:
+    - port: 80 
+      targetPort: 80
+    selector:
+        app: reactapp-be      
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactapp-fe
+spec:
+  selector:
+    matchLabels:
+      app: reactapp-fe
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactapp-fe
+    spec:
+      containers:
+      - name: reactapp-fe
+        image: nishantnepal/reactapp-fe
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 80   
+        env:
+            - name: API_BASE
+              value: "http://reactapp.<public-ip>.nip.io/be"                                        
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: reactapp-fe
+spec:
+    type: ClusterIP
+    ports:
+    - port: 80 
+      targetPort: 80
+    selector:
+        app: reactapp-fe     
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactapp-be2
+spec:
+  selector:
+    matchLabels:
+      app: reactapp-be2
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reactapp-be2
+    spec:
+      containers:
+      - name: reactapp-fe
+        image: nishantnepal/reactapp-be2
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "250m"
+          limits:
+            memory: "500Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 80                                               
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: reactapp-be2
+spec:
+    type: ClusterIP
+    ports:
+    - port: 80 
+      targetPort: 80
+    selector:
+        app: reactapp-be2     
+
+
+---            
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: reactapp-ingress 
+  annotations:
+       kubernetes.io/ingress.class: "azure/application-gateway" #https://raw.githubusercontent.com/Azure/application-gateway-kubernetes-ingress/master/docs/examples/aspnetapp.yaml
+       appgw.ingress.kubernetes.io/backend-path-prefix: "/" #https://github.com/Azure/application-gateway-kubernetes-ingress/issues/848
+       appgw.ingress.kubernetes.io/request-timeout: "120" #https://azure.github.io/application-gateway-kubernetes-ingress/annotations/#request-timeout       
+spec:
+  rules:
+    - host: "reactapp.<public-ip>.nip.io"    
+      http:
+       paths:
+        - path: /be/*
+          backend:
+            serviceName: reactapp-be 
+            servicePort: 80        
+  backend: 
+    serviceName: reactapp-fe
+    servicePort: 80    
