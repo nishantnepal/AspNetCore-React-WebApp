@@ -63,7 +63,7 @@ stages:
         inputs:
           checkCoverage: true
           coverageFailOption: 'fixed'
-          coverageType: 'blocks'
+          coverageType: 'branches'
           coverageThreshold: '30'
 
 - stage: ui_build
