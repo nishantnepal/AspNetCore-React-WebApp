@@ -40,7 +40,7 @@ stages:
       - script: |
           ls
           echo $System_DefaultWorkingDirectory
-          ls $System_DefaultWorkingDirectory
+          ls $System_DefaultWorkingDirectory/coveragereport
         displayName: 'get test results'  
 
       - task: PublishCodeCoverageResults@1
