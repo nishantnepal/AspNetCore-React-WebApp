@@ -59,6 +59,12 @@ stages:
           testResultsFiles: '**/test*.xml' 
           searchFolder: '$(System.DefaultWorkingDirectory)/coveragereport'
           publishRunAttachments: true
+      - task: BuildQualityChecks@7
+        inputs:
+          checkCoverage: true
+          coverageFailOption: 'fixed'
+          coverageType: 'blocks'
+          coverageThreshold: '30'
 
 - stage: ui_build
   displayName: UI Build
