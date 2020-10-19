@@ -34,8 +34,7 @@ stages:
           export id=$(docker images --filter "label=test=true" -q | head -1)
           docker create --name testcontainer $id          
           docker cp testcontainer:/testresults ./coveragereport
-          docker rm testcontainer
-          ls /coveragereport
+          docker rm testcontainer          
         displayName: 'get test results'
 
       - script: |
