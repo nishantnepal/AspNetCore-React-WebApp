@@ -33,25 +33,26 @@ stages:
       - script: |
           export id=$(docker images --filter "label=test=true" -q | head -1)
           docker create --name testcontainer $id          
-          docker cp testcontainer:/testresults ./coveragereport
+          docker cp testcontainer:/testresults ./testresults
           docker rm testcontainer          
         displayName: 'get test results'
 
       - script: |
-          echo './coveragereport'
-          ls ./coveragereport
-          echo './coveragereport/coverage'
-          ls ./coveragereport/coverage
-          echo './coveragereport/coverage/reports'
-          ls ./coveragereport/coverage/reports
+          echo './testresults'
+          ls ./testresults         
         displayName: 'get test results'  
 
+      - task: reportgenerator@4
+        inputs:
+          reports: '$(Build.SourcesDirectory)/**/coverage.opencover.xml'
+          targetdir: 'coveragereport'
+          sourcedirs: '$(Build.SourcesDirectory)'
       - task: PublishCodeCoverageResults@1
         displayName: 'Publish code coverage'
         inputs:
           codeCoverageTool: Cobertura
-          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coveragereport/coverage/coverage.opencover.xml' 
-          reportDirectory: '$(System.DefaultWorkingDirectory)/coveragereport/coverage/reports'
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coveragereport/Cobertura.xml' 
+          reportDirectory: '$(System.DefaultWorkingDirectory)/coveragereport'
 
       - task: PublishTestResults@2
         inputs:
