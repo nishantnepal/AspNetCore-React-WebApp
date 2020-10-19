@@ -35,11 +35,13 @@ stages:
           docker create --name testcontainer $id          
           docker cp testcontainer:/testresults ./testresults
           docker rm testcontainer          
-        displayName: 'get test results'
+        displayName: 'Extract test results'
 
       - script: |
           echo './testresults'
-          ls ./testresults         
+          ls ./testresults   
+          echo './testresults/coverage'      
+          ls ./testresults/coverage
         displayName: 'get test results'  
 
       - task: reportgenerator@4
