@@ -38,9 +38,6 @@ stages:
         displayName: 'get test results'
 
       - script: |
-          ls
-          echo $System_DefaultWorkingDirectory
-          ls ./service
           ls ./coveragereport
         displayName: 'get test results'  
 
