@@ -59,7 +59,7 @@ stages:
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'VSTest'
-          testResultsFiles: '**/test*.xml' 
+          testResultsFiles: '**/*.trx' 
           searchFolder: '$(System.DefaultWorkingDirectory)/coveragereport'
           publishRunAttachments: true
       - task: BuildQualityChecks@7
