@@ -22,13 +22,13 @@ COPY . .
 # use the label to identity this layer later
 LABEL test=true
 # install the report generator tool
-RUN dotnet tool install dotnet-reportgenerator-globaltool --tool-path /tools
+#RUN dotnet tool install dotnet-reportgenerator-globaltool --tool-path /tools
 # run the test and collect code coverage (requires coverlet.msbuild to be added to test project)
 # for exclude, use %2c for ,
 RUN dotnet test --results-directory /testresults --logger "trx;LogFileName=test_results.xml" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=/testresults/coverage/  ./Microsoft.DSX.ProjectTemplate.sln
 # generate html reports using report generator tool
-RUN /tools/reportgenerator "-reports:/testresults/coverage/coverage.opencover.xml" "-targetdir:/testresults/coverage/reports" "-reporttypes:HTMLInline;HTMLChart"
-RUN ls -la /testresults/coverage/reports
+#RUN /tools/reportgenerator "-reports:/testresults/coverage/coverage.opencover.xml" "-targetdir:/testresults/coverage/reports" "-reporttypes:HTMLInline;HTMLChart"
+#RUN ls -la /testresults/coverage/reports
 
 
 WORKDIR "/src/Microsoft.DSX.ProjectTemplate.API"
