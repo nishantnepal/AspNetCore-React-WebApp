@@ -27,7 +27,7 @@ stages:
         inputs:
           command: 'build'
           Dockerfile: '$(dockerfilePath)'
-          buildContext: '$(Build.SourcesDirectory)'
+          buildContext: '$(Build.SourcesDirectory)/service'
           tags: '$(tag)'
 
       - script: |
@@ -39,6 +39,7 @@ stages:
 
       - script: |
           ls
+          echo $System_DefaultWorkingDirectory
           ls $System_DefaultWorkingDirectory
         displayName: 'get test results'  
 
