@@ -12,6 +12,8 @@ pool:
 variables:
   solution: '**/*.sln'
   buildConfiguration: 'Release'
+  tag: '$(Build.BuildId)'
+  dockerfilePath: '**/service/Dockerfile'
 
 stages:
 - stage: api_build
@@ -23,9 +25,7 @@ stages:
       - task: Docker@2
         displayName: Docker Build
         inputs:
-          containerRegistry: '$(containerRegistryServiceConnection)'
-          repository: '$(imageRepository)'
-          command: 'buildAndPush'
+          command: 'build'
           Dockerfile: '$(dockerfilePath)'
           buildContext: '$(Build.SourcesDirectory)'
           tags: '$(tag)'
