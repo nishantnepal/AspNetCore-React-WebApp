@@ -12,6 +12,8 @@ pool:
 variables:
   solution: '**/*.sln'
   buildConfiguration: 'Release'
+  tag: '$(Build.BuildId)'
+  dockerfilePath: '**/service/Dockerfile'
 
 stages:
 - stage: api_build
@@ -23,38 +25,46 @@ stages:
       - task: Docker@2
         displayName: Docker Build
         inputs:
-          containerRegistry: '$(containerRegistryServiceConnection)'
-          repository: '$(imageRepository)'
-          command: 'buildAndPush'
+          command: 'build'
           Dockerfile: '$(dockerfilePath)'
-          buildContext: '$(Build.SourcesDirectory)'
+          buildContext: '$(Build.SourcesDirectory)/service'
           tags: '$(tag)'
 
       - script: |
           export id=$(docker images --filter "label=test=true" -q | head -1)
-          docker create --name testcontainer $id
+          docker create --name testcontainer $id          
           docker cp testcontainer:/testresults ./coveragereport
-          docker rm testcontainer
+          docker rm testcontainer          
         displayName: 'get test results'
 
       - script: |
-          ls
-          ls $System_DefaultWorkingDirectory
+          echo './coveragereport'
+          ls ./coveragereport
+          echo './coveragereport/coverage'
+          ls ./coveragereport/coverage
+          echo './coveragereport/coverage/reports'
+          ls ./coveragereport/coverage/reports
         displayName: 'get test results'  
 
       - task: PublishCodeCoverageResults@1
         displayName: 'Publish code coverage'
         inputs:
           codeCoverageTool: Cobertura
-          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coveragereport/Cobertura.xml' 
-          reportDirectory: '$(System.DefaultWorkingDirectory)/coveragereport'
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coveragereport/coverage/coverage.opencover.xml' 
+          reportDirectory: '$(System.DefaultWorkingDirectory)/coveragereport/coverage/reports'
 
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'VSTest'
-          testResultsFiles: '**/*.trx'
-          mergeTestResults: true
-          failTaskOnFailedTests: true
+          testResultsFiles: '**/test*.xml' 
+          searchFolder: '$(System.DefaultWorkingDirectory)/coveragereport'
+          publishRunAttachments: true
+      - task: BuildQualityChecks@7
+        inputs:
+          checkCoverage: true
+          coverageFailOption: 'fixed'
+          coverageType: 'branches'
+          coverageThreshold: '30'
 
 - stage: ui_build
   displayName: UI Build
