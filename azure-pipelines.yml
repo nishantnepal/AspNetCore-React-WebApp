@@ -38,8 +38,12 @@ stages:
         displayName: 'get test results'
 
       - script: |
+          echo './coveragereport'
           ls ./coveragereport
+          echo './coveragereport/coverage'
           ls ./coveragereport/coverage
+          echo './coveragereport/coverage/reports'
+          ls ./coveragereport/coverage/reports
         displayName: 'get test results'  
 
       - task: PublishCodeCoverageResults@1
