@@ -50,15 +50,15 @@ stages:
         displayName: 'Publish code coverage'
         inputs:
           codeCoverageTool: Cobertura
-          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coveragereport/Cobertura.xml' 
-          reportDirectory: '$(System.DefaultWorkingDirectory)/coveragereport'
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coveragereport/coverage/coverage.opencover.xml' 
+          reportDirectory: '$(System.DefaultWorkingDirectory)/coveragereport/coverage/reports'
 
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'VSTest'
-          testResultsFiles: '**/*.trx'
-          mergeTestResults: true
-          failTaskOnFailedTests: true
+          testResultsFiles: '**/test*.xml' 
+          searchFolder: '$(System.DefaultWorkingDirectory)/coveragereport'
+          publishRunAttachments: true
 
 - stage: ui_build
   displayName: UI Build
