@@ -20,25 +20,41 @@ stages:
   - job: CI
     displayName: Api Build    
     steps:
-    - task: DotNetCoreCLI@2
-      displayName: Build
-      inputs:
-        command: 'build'
-        projects: '**/*.csproj'
-        arguments: '--configuration $(buildConfiguration)'
-    - task: DotNetCoreCLI@2
-      displayName: Publish
-      inputs:
-        command: publish
-        publishWebProjects: True
-        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-        zipAfterPublish: True
-    - task: PublishBuildArtifacts@1
-      displayName: Publish Artifacts
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'api'
-        publishLocation: 'Container'
+      - task: Docker@2
+        displayName: Docker Build
+        inputs:
+          containerRegistry: '$(containerRegistryServiceConnection)'
+          repository: '$(imageRepository)'
+          command: 'buildAndPush'
+          Dockerfile: '$(dockerfilePath)'
+          buildContext: '$(Build.SourcesDirectory)'
+          tags: '$(tag)'
+
+      - script: |
+          export id=$(docker images --filter "label=test=true" -q | head -1)
+          docker create --name testcontainer $id
+          docker cp testcontainer:/testresults ./coveragereport
+          docker rm testcontainer
+        displayName: 'get test results'
+
+      - script: |
+          ls
+          ls $System_DefaultWorkingDirectory
+        displayName: 'get test results'  
+
+      - task: PublishCodeCoverageResults@1
+        displayName: 'Publish code coverage'
+        inputs:
+          codeCoverageTool: Cobertura
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coveragereport/Cobertura.xml' 
+          reportDirectory: '$(System.DefaultWorkingDirectory)/coveragereport'
+
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'VSTest'
+          testResultsFiles: '**/*.trx'
+          mergeTestResults: true
+          failTaskOnFailedTests: true
 
 - stage: ui_build
   displayName: UI Build
